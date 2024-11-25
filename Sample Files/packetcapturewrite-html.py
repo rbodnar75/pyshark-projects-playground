@@ -1,6 +1,6 @@
 import os
 import pyshark
-c = pyshark.LiveCapture(interface="Wi-Fi",capture_filter="IP")
+c = pyshark.LiveCapture(interface="Wi-Fi")
 
 
 
@@ -58,10 +58,23 @@ for packet in c.sniff_continuously(packet_count=50):
     fo.write(packet.eth.addr)
     fo.write("</td>")
     fo.write("<td> SRC IP: ")
-    fo.write(packet.ip.addr)
+    #Verify if the SRC interface has an IP Layer value
+    if hasattr(packet, 'ip'):
+        fo.write(packet.ip.src)
+    else:
+        fo.write("No IP Layer")
+
+
+
+    #fo.write(packet.ip.addr)
     fo.write("</td>")
     fo.write("<td> DST IP: ")
-    fo.write(packet.ip.dst)
+    #Verify if the DST interface has an IP Layer value
+    if hasattr(packet, 'ip'):
+        fo.write(packet.ip.dst)
+    else:
+        fo.write("No IP Layer")
+    #fo.write(packet.ip.dst)
     fo.write("</td></tr>\n")
     #textstuff = packet.pretty_print()
     #fo.write(textstuff)
