@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "install pyshark",
+            "type": "shell",
+            "command": "pip install pyshark",
+            "problemMatcher": []
+        }
+    ]
+}
