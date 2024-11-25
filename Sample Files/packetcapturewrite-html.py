@@ -1,6 +1,6 @@
 import os
 import pyshark
-c = pyshark.LiveCapture(interface="Wi-Fi")
+c = pyshark.LiveCapture(interface="Wi-Fi",capture_filter="IP")
 
 
 
