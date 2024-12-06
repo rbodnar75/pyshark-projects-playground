@@ -2,11 +2,15 @@ import pyshark
 import json
 import time
 from datetime import datetime
+from collections import deque
 
 def capture_packets():
+    max_packets = 1000
+    packets = deque(maxlen=max_packets)
+
     while True:
         capture = pyshark.LiveCapture(interface='eth0')
-        packets = []
+        new_packets = []
 
         for packet in capture.sniff_continuously(packet_count=50):
             packet_info = {
@@ -19,15 +23,17 @@ def capture_packets():
                 'protocol': packet.transport_layer if hasattr(packet, 'transport_layer') else 'N/A',
                 'info': str(packet)
             }
-            packets.append(packet_info)
+            new_packets.append(packet_info)
+
+        packets.extend(new_packets)
 
         # Save packets to JSON file
         with open('/app/packets.json', 'w') as f:
-            json.dump(packets, f, indent=4)
+            json.dump(list(packets), f, indent=4)
 
         # Save packets to PCAP file
         capture = pyshark.LiveCapture(interface='eth0', output_file='/app/packets.pcap')
-        capture.sniff(packet_count=50)
+        capture.sniff(packet_count=1000)
 
         print("Updated packets.json and packets.pcap")
         time.sleep(10)
