@@ -26,10 +26,8 @@ def capture_packets():
             json.dump(packets, f, indent=4)
 
         # Save packets to PCAP file
-        capture_file = pyshark.FileCapture('/app/packets.pcap', mode='w')
-        for packet in packets:
-            capture_file.write(packet)
-        capture_file.close()
+        capture = pyshark.LiveCapture(interface='eth0', output_file='/app/packets.pcap')
+        capture.sniff(packet_count=50)
 
         print("Updated packets.json and packets.pcap")
         time.sleep(10)

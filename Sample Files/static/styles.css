@@ -51,6 +51,19 @@ p {
   max-width: none;
 }
 
+/* Styles for sortable columns */
+.sortable {
+  cursor: pointer;
+}
+
+.sortable:after {
+  content: ' \25B2'; /* Up arrow */
+}
+
+.sortable.desc:after {
+  content: ' \25BC'; /* Down arrow */
+}
+
 /* Mobile-friendly styles */
 @media (max-width: 600px) {
   #packets {

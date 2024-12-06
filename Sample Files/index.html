@@ -17,6 +17,15 @@
             white-space: normal;
             max-width: none;
         }
+        .sortable {
+            cursor: pointer;
+        }
+        .sortable:after {
+            content: ' \25B2'; /* Up arrow */
+        }
+        .sortable.desc:after {
+            content: ' \25BC'; /* Down arrow */
+        }
     </style>
 </head>
 <body>
@@ -33,7 +42,7 @@
     <table id="packets">
         <thead>
             <tr>
-                <th>Timestamp</th>
+                <th class="sortable" onclick="sortPackets('timestamp')">Timestamp</th>
                 <th>MAC</th>
                 <th>Source IP</th>
                 <th>Destination IP</th>
@@ -47,9 +56,12 @@
         </tbody>
     </table>
     <script>
+        let packets = [];
+        let sortOrder = 'asc';
+
         async function loadPackets() {
             const response = await fetch('packets.json');
-            const packets = await response.json();
+            packets = await response.json();
             return packets;
         }
 
@@ -89,6 +101,31 @@
                 });
                 displayPackets(filteredPackets);
             }
+        }
+
+        function sortPackets(column) {
+            packets.sort((a, b) => {
+                const aValue = a[column];
+                const bValue = b[column];
+                if (sortOrder === 'asc') {
+                    return aValue > bValue ? 1 : -1;
+                } else {
+                    return aValue < bValue ? 1 : -1;
+                }
+            });
+            sortOrder = sortOrder === 'asc' ? 'desc' : 'asc';
+            displayPackets(packets);
+            updateSortIcons(column);
+        }
+
+        function updateSortIcons(column) {
+            const headers = document.querySelectorAll('.sortable');
+            headers.forEach(header => {
+                header.classList.remove('asc', 'desc');
+                if (header.textContent === 'Timestamp') {
+                    header.classList.add(sortOrder);
+                }
+            });
         }
 
         window.onload = () => {
