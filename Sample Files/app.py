@@ -1,4 +1,4 @@
-from flask import Flask, send_file, make_response
+from flask import Flask, send_file, make_response, jsonify
 import pyshark
 import threading
 import time
@@ -10,7 +10,7 @@ def capture_packets():
     while True:
         c = pyshark.LiveCapture(interface="eth0")
         packets = list(c.sniff_continuously(packet_count=50))
-        with open("packetcapture.html", "w") as fo:
+        with open("/app/packetcapture.html", "w") as fo:
             fo.write("<html>\n")
             fo.write("<title>Captured Packets</title>\n")
             fo.write("<head>\n")
@@ -44,21 +44,30 @@ def capture_packets():
 
 @app.route('/')
 def home():
-    response = make_response(send_file("packetcapture.html"))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
+    try:
+        response = make_response(send_file("/app/packetcapture.html"))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/packetcapture')
 def packetcapture():
-    response = make_response(send_file("packetcapture.html"))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
+    try:
+        response = make_response(send_file("/app/packetcapture.html"))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 @app.route('/livecapture')
 def livecapture():
-    response = make_response(send_file("livecapture.html"))
-    response.headers['Cache-Control'] = 'no-store'
-    return response
+    try:
+        response = make_response(send_file("/app/livecapture.html"))
+        response.headers['Cache-Control'] = 'no-store'
+        return response
+    except Exception as e:
+        return jsonify(error=str(e)), 500
 
 if __name__ == '__main__':
     # Start the packet capture in a separate thread

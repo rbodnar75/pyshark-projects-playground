@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Capture</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+    <style>
+        .info {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            cursor: pointer;
+            max-width: 200px; /* Adjust as needed */
+        }
+        .info.expanded {
+            white-space: normal;
+            max-width: none;
+        }
+    </style>
+</head>
+<body>
+    <h1>Mr. Packet Capture</h1>
+    <nav>
+        <a href="#" onclick="filterPackets('DNS')">DNS Packets</a> |
+        <a href="#" onclick="filterPackets('TCP')">TCP Packets</a> |
+        <a href="#" onclick="filterPackets('UDP')">UDP Packets</a> |
+        <a href="#" onclick="filterPackets('HTTP')">HTTP Packets</a> |
+        <a href="#" onclick="filterPackets('ALL')">All Packets</a> |
+        <a href="packets.json" download="packets.json">Download JSON</a> |
+        <a href="packets.pcap" download="packets.pcap">Download PCAP</a>
+    </nav>
+    <table id="packets">
+        <thead>
+            <tr>
+                <th>Timestamp</th>
+                <th>MAC</th>
+                <th>Source IP</th>
+                <th>Destination IP</th>
+                <th>Source Port</th>
+                <th>Destination Port</th>
+                <th>Protocol</th>
+                <th>Info</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <script>
+        async function loadPackets() {
+            const response = await fetch('packets.json');
+            const packets = await response.json();
+            return packets;
+        }
+
+        function displayPackets(packets) {
+            const tbody = document.querySelector('#packets tbody');
+            tbody.innerHTML = '';
+            packets.forEach(packet => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${packet.timestamp}</td>
+                    <td>${packet.mac}</td>
+                    <td>${packet.src_ip}</td>
+                    <td>${packet.dst_ip}</td>
+                    <td>${packet.src_port}</td>
+                    <td>${packet.dst_port}</td>
+                    <td>${packet.protocol}</td>
+                    <td class="info" onclick="toggleInfo(this)">${packet.info}</td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+
+        function toggleInfo(element) {
+            element.classList.toggle('expanded');
+        }
+
+        async function filterPackets(protocol) {
+            const packets = await loadPackets();
+            if (protocol === 'ALL') {
+                displayPackets(packets);
+            } else {
+                const filteredPackets = packets.filter(packet => {
+                    if (protocol === 'HTTP') {
+                        return packet.info.includes('HTTP');
+                    }
+                    return packet.protocol === protocol;
+                });
+                displayPackets(filteredPackets);
+            }
+        }
+
+        window.onload = () => {
+            filterPackets('ALL');
+        };
+    </script>
+</body>
+</html>

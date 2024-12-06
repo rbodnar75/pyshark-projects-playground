@@ -9,11 +9,15 @@
 # The packets are captured in real-time.
 # The packets are captured continuously.
 
+import pyshark
+import time
+from datetime import datetime
+
 def capture_packets():
     while True:
         c = pyshark.LiveCapture(interface="eth0")
         packets = list(c.sniff_continuously(packet_count=50))
-        with open("livecapture.html", "w") as fo:
+        with open("/app/livecapture.html", "w") as fo:
             fo.write("<html>\n")
             fo.write("<title>Captured Packets</title>\n")
             fo.write("<head>\n")
