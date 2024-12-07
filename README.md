@@ -55,7 +55,7 @@ Open your web browser and navigate to `http://localhost:5001`. You will see the 
 
 Here is a sample of what the captured packets might look like on the web interface:
 
-![Packet Capture](path/to/screenshot.png)
+![Packet Capture](./Images/MrPacketCapture.png)
 
 ## Key Files
 
