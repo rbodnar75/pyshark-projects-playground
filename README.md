@@ -28,7 +28,7 @@ https://github.com/KimiNewt/pyshark.git
 
 3. **Run the Docker Container**
    ```bash
-   docker run -p 5001:5001 packetcapture
+   docker run -p 8000:8000 packetcapture
    ```
 
 ## Usage
@@ -49,7 +49,7 @@ The server continuously captures packets using Pyshark and updates the `packetca
 
 ### Accessing the Web Interface
 
-Open your web browser and navigate to `http://localhost:5001`. You will see the captured packets displayed on the web page. The page refreshes every 10 seconds to show the latest captured packets.
+Open your web browser and navigate to `http://localhost:8000`. You will see the captured packets displayed on the web page. The page refreshes every 10 seconds to show the latest captured packets.
 
 ## Example Output
 
