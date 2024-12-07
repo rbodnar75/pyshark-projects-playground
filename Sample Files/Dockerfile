@@ -17,7 +17,7 @@ RUN pip install --no-cache-dir -r requirements.txt
 EXPOSE 8000
 
 # Define environment variable
-ENV NAME=PacketCaptureWebServer
+ENV NAME=MrPacketCapture
 
 # Run the packet capture script and the HTTP server when the container launches
 CMD ["sh", "-c", "python capture_packets.py & python -m http.server 8000"]
