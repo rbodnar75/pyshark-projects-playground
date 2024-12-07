@@ -60,6 +60,7 @@ Here is a sample of what the captured packets might look like on the web interfa
 ## Key Files
 
 - `Sample Files/index.html`: The main interface for the Flask application that sets up the web server and handles packet capturing.
+- `Sample Files/static/styles/css`: Needed for correctly formatting the HTML output.
 - `Sample Files/capture_packets.py`: Script for capturing packets and saving them in JSON and PCAP formats.
 - `Sample Files/Dockerfile`: Dockerfile for setting up the environment and running the application.
 - `Sample Files/packetcapture.html`: A sample HTML template for the displayed captured packets.
