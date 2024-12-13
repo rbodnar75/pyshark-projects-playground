@@ -5,37 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Packet Capture</title>
     <link rel="stylesheet" type="text/css" href="static/styles.css">
-    <style>
-        .info {
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            cursor: pointer;
-            max-width: 200px; /* Adjust as needed */
-        }
-        .info.expanded {
-            white-space: normal;
-            max-width: none;
-        }
-        .sortable {
-            cursor: pointer;
-        }
-        .sortable:after {
-            content: ' \25B2'; /* Up arrow */
-        }
-        .sortable.desc:after {
-            content: ' \25BC'; /* Down arrow */
-        }
-    </style>
 </head>
 <body>
     <h1>Mr. Packet Capture</h1>
     <nav>
-        <a href="#" onclick="filterPackets('DNS')">DNS Packets</a> |
-        <a href="#" onclick="filterPackets('TCP')">TCP Packets</a> |
-        <a href="#" onclick="filterPackets('UDP')">UDP Packets</a> |
-        <a href="#" onclick="filterPackets('HTTP')">HTTP Packets</a> |
-        <a href="#" onclick="filterPackets('ALL')">All Packets</a> |
+        <div class="dropdown">
+            <button class="dropbtn" onclick="toggleDropdown()">Filter Packets</button>
+            <div class="dropdown-content" id="dropdown-content">
+                <a href="#" onclick="filterPackets('DNS')">DNS Packets</a>
+                <a href="#" onclick="filterPackets('TCP')">TCP Packets</a>
+                <a href="#" onclick="filterPackets('UDP')">UDP Packets</a>
+                <a href="#" onclick="filterPackets('HTTP')">HTTP Packets</a>
+                <a href="#" onclick="filterPackets('ALL')">All Packets</a>
+            </div>
+        </div>
         <a href="data/packets.json" download="packets.json">Download JSON</a> |
         <a href="data/packets.pcap" download="packets.pcap">Download PCAP</a>
     </nav>
@@ -59,6 +42,22 @@
         let packets = [];
         let sortOrder = 'asc';
 
+        function toggleDropdown() {
+            document.getElementById("dropdown-content").classList.toggle("show");
+        }
+
+        window.onclick = function(event) {
+            if (!event.target.matches('.dropbtn')) {
+                const dropdowns = document.getElementsByClassName("dropdown-content");
+                for (let i = 0; i < dropdowns.length; i++) {
+                    const openDropdown = dropdowns[i];
+                    if (openDropdown.classList.contains('show')) {
+                        openDropdown.classList.remove('show');
+                    }
+                }
+            }
+        }
+
         async function loadPackets() {
             const response = await fetch('data/packets.json');
             packets = await response.json();
@@ -67,7 +66,7 @@
 
         function displayPackets(packets) {
             const tbody = document.querySelector('#packets tbody');
-            tbody.innerHTML = '';
+            tbody.innerHTML = ''; // Clear existing rows
             packets.forEach(packet => {
                 const row = document.createElement('tr');
                 row.innerHTML = `
@@ -78,8 +77,12 @@
                     <td>${packet.src_port}</td>
                     <td>${packet.dst_port}</td>
                     <td>${packet.protocol}</td>
-                    <td class="info" onclick="toggleInfo(this)">${packet.info}</td>
                 `;
+                const infoCell = document.createElement('td');
+                infoCell.className = 'info';
+                infoCell.textContent = packet.info;
+                infoCell.onclick = function() { toggleInfo(this); };
+                row.appendChild(infoCell);
                 tbody.appendChild(row);
             });
         }
@@ -101,6 +104,7 @@
                 });
                 displayPackets(filteredPackets);
             }
+            toggleDropdown(); // Collapse the dropdown after selection
         }
 
         function sortPackets(column) {

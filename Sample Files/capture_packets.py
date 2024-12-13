@@ -20,18 +20,18 @@ def capture_packets():
                 'src_port': packet.tcp.srcport if hasattr(packet, 'tcp') else 'N/A',
                 'dst_port': packet.tcp.dstport if hasattr(packet, 'tcp') else 'N/A',
                 'protocol': packet.transport_layer if hasattr(packet, 'transport_layer') else 'N/A',
-                'info': str(packet)
+                'info': str(packet)[:200]  # Limit the length of the info field to avoid large content
             }
             new_packets.append(packet_info)
 
         packets.extend(new_packets)
 
         # Save packets to both a JSON file and a PCAP file
-        with open('/app/data/packets.json', 'w') as f:
+        with open('/data/packets.json', 'w') as f:
             json.dump(list(packets), f, indent=4)
 
         # Save packets to PCAP file
-        capture = pyshark.LiveCapture(interface='eth0', output_file='/app/data/packets.pcap')
+        capture = pyshark.LiveCapture(interface='eth0', output_file='/data/packets.pcap')
         capture.sniff(packet_count=50)
 
         print("Updated packets.json and packets.pcap")
