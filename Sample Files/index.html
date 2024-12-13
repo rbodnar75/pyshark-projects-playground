@@ -36,8 +36,8 @@
         <a href="#" onclick="filterPackets('UDP')">UDP Packets</a> |
         <a href="#" onclick="filterPackets('HTTP')">HTTP Packets</a> |
         <a href="#" onclick="filterPackets('ALL')">All Packets</a> |
-        <a href="packets.json" download="packets.json">Download JSON</a> |
-        <a href="packets.pcap" download="packets.pcap">Download PCAP</a>
+        <a href="data/packets.json" download="packets.json">Download JSON</a> |
+        <a href="data/packets.pcap" download="packets.pcap">Download PCAP</a>
     </nav>
     <table id="packets">
         <thead>
@@ -60,7 +60,7 @@
         let sortOrder = 'asc';
 
         async function loadPackets() {
-            const response = await fetch('packets.json');
+            const response = await fetch('data/packets.json');
             packets = await response.json();
             return packets;
         }

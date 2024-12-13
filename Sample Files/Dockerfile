@@ -7,6 +7,9 @@ WORKDIR /app
 # Install TShark and other necessary packages
 RUN apt-get update && apt-get install -y tshark && apt-get install -y curl
 
+# Create necessary directories
+RUN mkdir -p /app/data
+
 # Copy the current directory contents into the container at /app
 COPY . /app
 
