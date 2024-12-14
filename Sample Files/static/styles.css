@@ -76,18 +76,18 @@ tr:hover {
 }
 
 /* Dropdown menu styles */
+.dropdown {
+  display: inline-block;
+  position: relative;
+}
+
 .dropbtn {
-  background-color: #4CAF50;
+  background-color: #007bff;
   color: white;
-  padding: 16px;
+  padding: 10px;
   font-size: 16px;
   border: none;
   cursor: pointer;
-}
-
-.dropdown {
-  position: relative;
-  display: inline-block;
 }
 
 .dropdown-content {
@@ -110,12 +110,12 @@ tr:hover {
   background-color: #f1f1f1;
 }
 
-.dropdown:hover .dropbtn {
-  background-color: #3e8e41;
+.dropdown:hover .dropdown-content {
+  display: block;
 }
 
-.show {
-  display: block;
+.dropdown:hover .dropbtn {
+  background-color: #0056b3;
 }
 
 /* Mobile-friendly styles */
