@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Capture Statistics</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+</head>
+<body>
+    <h1>Packet Capture Statistics</h1>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="data/packets.json" download="packets.json">Download JSON</a> |
+        <a href="data/packets.pcap" download="packets.pcap">Download PCAP</a>
+    </nav>
+    <div id="statistics">
+        <h2>Statistics Overview</h2>
+        <div>
+            <h3>Packets by Source IP</h3>
+            <ul id="source-ip-stats"></ul>
+        </div>
+        <div>
+            <h3>Packets by Destination IP</h3>
+            <ul id="destination-ip-stats"></ul>
+        </div>
+        <div>
+            <h3>Packets by Port</h3>
+            <ul id="port-stats"></ul>
+        </div>
+    </div>
+    <script>
+        async function loadStatistics() {
+            const response = await fetch('data/packets.json');
+            const packets = await response.json();
+
+            const sourceIpStats = {};
+            const destinationIpStats = {};
+            const portStats = {};
+
+            packets.forEach(packet => {
+                // Count packets by source IP
+                const srcIp = packet.src_ip;
+                sourceIpStats[srcIp] = (sourceIpStats[srcIp] || 0) + 1;
+
+                // Count packets by destination IP
+                const dstIp = packet.dst_ip;
+                destinationIpStats[dstIp] = (destinationIpStats[dstIp] || 0) + 1;
+
+                // Count packets by source port
+                const srcPort = packet.src_port;
+                portStats[srcPort] = (portStats[srcPort] || 0) + 1;
+
+                // Count packets by destination port
+                const dstPort = packet.dst_port;
+                portStats[dstPort] = (portStats[dstPort] || 0) + 1;
+            });
+
+            displayStatistics(sourceIpStats, 'source-ip-stats');
+            displayStatistics(destinationIpStats, 'destination-ip-stats');
+            displayStatistics(portStats, 'port-stats');
+        }
+
+        function displayStatistics(stats, elementId) {
+            const ul = document.getElementById(elementId);
+            ul.innerHTML = ''; // Clear existing stats
+            for (const [key, value] of Object.entries(stats)) {
+                const li = document.createElement('li');
+                li.textContent = `${key}: ${value} packets`;
+                ul.appendChild(li);
+            }
+        }
+
+        window.onload = loadStatistics;
+    </script>
+</body>
+</html>

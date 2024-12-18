@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Packet Capture Statistics</title>
+    <link rel="stylesheet" type="text/css" href="static/styles.css">
+</head>
+<body>
+    <h1>Packet Capture Statistics</h1>
+    <div id="stats">
+        <h2>Total Packets: <span id="total-packets">0</span></h2>
+        <h3>Packets by Source IP</h3>
+        <ul id="source-ip-stats"></ul>
+        <h3>Packets by Destination IP</h3>
+        <ul id="destination-ip-stats"></ul>
+        <h3>Packets by Ports</h3>
+        <ul id="port-stats"></ul>
+    </div>
+    <script>
+        async function loadStatistics() {
+            const response = await fetch('data/packets.json');
+            const packets = await response.json();
+            const totalPackets = packets.length;
+            document.getElementById('total-packets').textContent = totalPackets;
+
+            const sourceIPCounts = {};
+            const destinationIPCounts = {};
+            const portCounts = {};
+
+            packets.forEach(packet => {
+                const srcIP = packet.src_ip;
+                const dstIP = packet.dst_ip;
+                const srcPort = packet.src_port;
+                const dstPort = packet.dst_port;
+
+                sourceIPCounts[srcIP] = (sourceIPCounts[srcIP] || 0) + 1;
+                destinationIPCounts[dstIP] = (destinationIPCounts[dstIP] || 0) + 1;
+                portCounts[srcPort] = (portCounts[srcPort] || 0) + 1;
+                portCounts[dstPort] = (portCounts[dstPort] || 0) + 1;
+            });
+
+            displayStats(sourceIPCounts, 'source-ip-stats');
+            displayStats(destinationIPCounts, 'destination-ip-stats');
+            displayStats(portCounts, 'port-stats');
+        }
+
+        function displayStats(counts, elementId) {
+            const ul = document.getElementById(elementId);
+            ul.innerHTML = '';
+            for (const [key, value] of Object.entries(counts)) {
+                const li = document.createElement('li');
+                li.textContent = `${key}: ${value}`;
+                ul.appendChild(li);
+            }
+        }
+
+        window.onload = loadStatistics;
+    </script>
+</body>
+</html>
